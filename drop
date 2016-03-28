@@ -1,0 +1,43 @@
+#!/bin/bash
+############################################################
+# repo: src/scripts
+# (c) Jim Gerdy (jjg@vundle.com) 2012
+# initial: Sep 2012
+############################################################
+usage() {
+cat << EOF
+usage: echo [LIST] | $0 options
+	functional 'drop'
+	-d	delimiter, optional
+	-h	help, show this message
+	-n	number of elements, default=1
+EOF
+}
+
+N=1
+while getopts d:hn: OPTION; do case $OPTION in
+	d)	DELIM=$OPTARG; ;;
+	h)	usage; exit 1; ;;
+	n)	N=$OPTARG; ;;
+esac ; done
+shift $(( $OPTIND -1 ))
+CMDARGS_REMAINING=$0
+
+if [[ -n $DELIM ]] ; then
+	OPTIONS=" -F \"$DELIM\" "
+fi
+
+  awk $OPTIONS -v ndrop=$N '{
+	if (ndrop>0) {
+		printf "%s", $(ndrop+1)
+		for (idx=ndrop+2; idx<=NF; idx++) printf " %s", $idx
+	} else if (ndrop<0) {
+		printf "%s", $1
+		for (idx=2; idx<=NF+ndrop; idx++) printf " %s", $idx
+	} else {
+		printf "%s", $1
+		for (idx=2; idx<=NF; idx++) printf " %s", $idx
+	}
+	printf "\n"
+}'
+
