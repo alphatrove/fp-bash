@@ -1,0 +1,5 @@
+EXEMODE = 775 ;
+
+InstallBin /opt/local/bin : take ;
+InstallBin /opt/local/bin : drop ;
+
